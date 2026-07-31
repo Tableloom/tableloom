@@ -31,12 +31,13 @@ def build_table(
     odd_bg_color=None,
     border_bottom_color=None,
     escape=True,
-    width_dict=[],
+    width_dict=None,
     padding="0px 20px 0px 0px",
     float_format=None,
-    conditions={},
+    conditions=None,
 ):
-
+    width_dict = width_dict or []
+    conditions = conditions or {}
     if df.empty:
         return ""
 
