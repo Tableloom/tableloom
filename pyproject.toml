@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tableloom"
+version = "0.0.1"
+description = "Render tabular data into beautiful, portable HTML."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE.txt"]
+
+authors = [
+    { name = "Tableloom contributors" }
+]
+
+dependencies = [
+    "pandas>=1.5"
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Text Processing :: Markup :: HTML",
+]
+
+[project.urls]
+Homepage = "https://github.com/tableloom/tableloom"
+Repository = "https://github.com/tableloom/tableloom"
+Issues = "https://github.com/tableloom/tableloom/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
