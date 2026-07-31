@@ -1,5 +1,7 @@
 # Tableloom
 
+[![Tests](https://github.com/Tableloom/tableloom/actions/workflows/tests.yml/badge.svg)](https://github.com/Tableloom/tableloom/actions/workflows/tests.yml)
+
 **Render tabular data into beautiful, portable HTML.**
 
 Tableloom is a Python library for turning tabular data into presentation-ready HTML, with a particular focus on producing tables that work well in email as well as modern web browsers.
