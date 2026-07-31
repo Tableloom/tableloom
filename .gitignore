@@ -1,7 +1,3 @@
-build/*
-dist/*
-pretty_html_table.egg-info/*
+.vscode/
 
-#update package
-python setup.py sdist bdist_wheel
-python -m twine upload -u USERNAME -p PASSWORD dist/*
+__pycache__
