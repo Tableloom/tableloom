@@ -74,10 +74,12 @@ pip install tableloom
 import pandas as pd
 from tableloom import build_table
 
-df = pd.DataFrame({
-    "Product": ["Widget A", "Widget B", "Widget C"],
-    "Sales": [125, 98, 147],
-})
+df = pd.DataFrame(
+    {
+        "Product": ["Widget A", "Widget B", "Widget C"],
+        "Sales": [125, 98, 147],
+    }
+)
 
 html = build_table(df)
 ```
