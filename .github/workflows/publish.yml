@@ -1,4 +1,4 @@
-name: Publish to TestPyPI
+name: Publish to PyPI
 
 on:
   push:
@@ -12,8 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     environment:
-      name: testpypi
-      url: https://test.pypi.org/p/tableloom/
+      name: pypi
 
     permissions:
       id-token: write
