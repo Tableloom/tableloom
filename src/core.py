@@ -336,7 +336,7 @@ def build_table(
                                         )[1:]
                                     )
                                 updated_body = True
-                        except:
+                        except (ValueError, IndexError, KeyError, TypeError):
                             pass
                     if not updated_body:
                         width_body = width_body + repr(line)[1:]
@@ -350,7 +350,7 @@ def build_table(
                         else:
                             w += 1
                 body = width_body[: len(width_body) - 1]
-            except:
+            except (KeyError, ValueError, TypeError):
                 pass
 
     if len(width_dict) == len(df.columns):

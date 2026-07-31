@@ -1,7 +1,6 @@
 import pytest
 
 pd = pytest.importorskip("pandas")
-import pandas as pd  # type: ignore
 
 from src.core import build_table
 
