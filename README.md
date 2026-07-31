@@ -1,147 +1,185 @@
-# pretty_html_table - Beautiful html tables made easy
+# Tableloom
 
-`pretty_html_table` exists to convert a pandas DataFrame into a pretty html table for use in email.  The intended target audience is anyone who needs to send reports via email and would like to make their tables look more attractive.
+**Render tabular data into beautiful, portable HTML.**
 
-12 different color themes are available. The output of the package embeds nicely with other packages used to send html emails, such as [email](https://docs.python.org/3/library/email.examples.html) or [O365](https://pypi.org/project/O365/).
-The html formatting is set at the DataFrame row level, which allows nearly every email provider to parse it.  This obviates the need to grok out how the CSS may interact with the sending/recieving email provider.
+Tableloom is a Python library for turning tabular data into presentation-ready HTML, with a particular focus on producing tables that work well in email as well as modern web browsers.
 
-Use [`pip`](https://pypi.org/project/pretty-html-table/) to install the package:
+It started as a fork of [`pretty_html_table`](https://github.com/sbi-rviot/ph_table), an MIT-licensed library for generating styled HTML tables from pandas DataFrames. Tableloom is intended to grow beyond that original use case while retaining the simplicity that made the original library useful.
 
-```
-pip install pretty_html_table
-```
+> **Early development:** Tableloom is currently in the 0.0.x series. The API and architecture are expected to evolve.
 
-A simple example to load an Excel file to a pandas DataFrame, convert it to html, and then save to an html file:
+## Why Tableloom?
 
-```
-from pretty_html_table import build_table
+HTML tables are deceptively complicated.
 
-df = pd.read_excel('df.xlsx')
-html_table_blue_light = build_table(df, 'blue_light')
+A table that looks great in a browser isn't necessarily suitable for an email. A table designed for email often doesn't make sense as a modern web component. And while libraries such as pandas provide powerful HTML styling capabilities, they don't necessarily solve the problem of choosing an appropriate representation for the destination.
 
-# Save to html file
-with open('pretty_table.html', 'w') as f:
-    f.write(html_table_blue_light)
+Tableloom aims to make that distinction explicit:
 
-# Compare to the pandas .to_html method:
-with open('pandas_table.html', 'w') as f:
-    f.write(df.to_html())
+```python
+from tableloom import build_table
+
+html = build_table(df)
 ```
 
-Use any browser to open `pretty_table.html` to see how the table would appear in an html email.
+The goal is eventually to make the destination a first-class choice:
 
-
-## Why choose pretty_html_table?
-
-Output is ready to be sent via any Python package used to send emails. Insert the result of this package to the body of the email and voila.
-
-
-## List of colors available
-
-| Name          | font style     | Header                                                        | Rows                                                              |
-|---------------|----------------|---------------------------------------------------------------|-------------------------------------------------------------------|
-| 'blue_light'  | Century Gothic | Bold: yes / Background color: white / Font color: dark blue   | Odd background color: light blue / Even background color: white   |
-| 'blue_dark'    | Century Gothic | Bold: yes / Background color: dark blue / Font color: white   | Odd background color: light blue / Even background color: white   |
-| 'grey_light'   | Century Gothic | Bold: yes / Background color: white / Font color: dark grey   | Odd background color: light grey / Even background color: white   |
-| 'grey_dark'    | Century Gothic | Bold: yes / Background color: dark grey / Font color: white   | Odd background color: light grey / Even background color: white   |
-| 'orange_light' | Century Gothic | Bold: yes / Background color: white / Font color: dark orange | Odd background color: light orange / Even background color: white |
-| 'orange_dark'  | Century Gothic | Bold: yes / Background color: dark orange / Font color: white | Odd background color: light orange / Even background color: white |
-| 'yellow_light' | Century Gothic | Bold: yes / Background color: white / Font color: dark yellow | Odd background color: light yellow / Even background color: white |
-| 'yellow_dark'  | Century Gothic | Bold: yes / Background color: dark yellow / Font color: white | Odd background color: light yellow / Even background color: white |
-| 'green_light'  | Century Gothic | Bold: yes / Background color: white / Font color: dark green  | Odd background color: light green / Even background color: white  |
-| 'green_dark'   | Century Gothic | Bold: yes / Background color: dark green / Font color: white  | Odd background color: light green / Even background color: white  |
-| 'red_light'  | Century Gothic | Bold: yes / Background color: white / Font color: dark red | Odd background color: light red / Even background color: white  |
-| 'red_dark'   | Century Gothic | Bold: yes / Background color: dark red / Font color: white  | Odd background color: light red / Even background color: white  |
-
-
-## Example of an integration with the O365 package
-
-First, create a function to send an email:
-
-```
-from O365 import Account
-
-# Never hard code credentials or store them in a repo
-# Use environmental variables instead
-
-credentials = (o365credid, o365credpwd)
-account = Account(credentials)
-
-def send_email(account, to, subject, start, body, end):
-    m = account.new_message()
-    m.to.add(to)
-    m.subject = subject
-    m.body = start + body + end
-    m.send()
+```python
+render(data, target="email")
+render(data, target="browser")
 ```
 
-Then create the start and end of an email in html:
+The same underlying data and presentation intent, rendered appropriately for where it is going.
 
+## Current status
+
+Tableloom is at an early stage.
+
+The initial release focuses on establishing a maintained, modern foundation based on the original `pretty_html_table` implementation.
+
+### Current
+
+* HTML table generation
+* Pandas DataFrame support
+* Email-friendly styling
+* Multiple built-in styles
+* Customisable table formatting
+* Modern Python packaging
+* Automated testing and CI
+
+### Planned
+
+* A unified `render()` API
+* Browser-oriented HTML output
+* Additional data sources beyond pandas
+* Support for sequences, records and arrays
+* Separate rendering targets for email and browser
+* Improved accessibility
+* More flexible themes and styling
+* Optional interactive browser output
+
+The roadmap will evolve based on real-world use rather than trying to build every possible table feature up front.
+
+## Installation
+
+```bash
+pip install tableloom
 ```
-start = """<html>
-                <body>
-                    <strong>Data table here:</strong><br />"""
 
+## Quick start
 
-end = """       </body>
-            </html>"""
+```python
+import pandas as pd
+from tableloom import build_table
+
+df = pd.DataFrame({
+    "Product": ["Widget A", "Widget B", "Widget C"],
+    "Sales": [125, 98, 147],
+})
+
+html = build_table(df)
 ```
 
-Finally we can utilize `pretty_table_html` to convert our Excel file and send the email:
+The returned HTML can be inserted into an email or included in an HTML document.
 
+For example:
+
+```python
+message = f"""
+<html>
+<body>
+<h2>Sales Report</h2>
+
+{html}
+
+</body>
+</html>
+"""
 ```
-from pretty_html_table import build_table
 
-html_table_blue_light = build_table(pd.read_excel('df.xlsx'), 'blue_light')
+## Email-friendly HTML
 
-send_email(account
-           , 'test@any.com'
-           , 'test table'
-           , start
-           , html_table_blue_light
-           , end
-           )
-```
+One of Tableloom's primary goals is making attractive tables that can be embedded directly into email messages.
 
-Here are all of the currently available colors: 
+Email clients impose significantly more restrictive HTML and CSS constraints than modern browsers. Tableloom therefore treats email rendering as a distinct target rather than assuming that browser-oriented HTML will work everywhere.
 
-![Light](image/1.PNG)
-![Dark](image/2.PNG)
+## Browser rendering
 
-## Additional arguments
-Several optional arguments now exist that allow the user to control the table's font, font size, and alignment:
+Browser output is planned as a first-class rendering target.
 
-* `font_size` - accepts absolute keywords (`medium`) and pixel values (`20px`)
-* `font_family` - best practice is to include a generic font family in case a recipient's client cannot render the chosen font.  The example below designates `Open Sans` as a font, but designates the generic `sans-serif` family as a fallback.  It's possible that the fallback font may be utilized in case a recipient has web fonts blocked for security reasons, or if they are viewing the email on a client that does not have acces to Google Fonts.
-* `text_align` - accepts standard html property values such as `left`, `right`, `center`, `justify`.
-* `width` - accepts string representation of pixels. For instance, for the columns to have a width of 100px, you would write: width="100px".
-* `width_dict` - accepts list of string representation of pixels. It will only work if the length of the list matches the number of columns of your pandas dataframe. You can for example provide the following argument to the fonction: width_dict=['300px','auto', 'auto', 'auto','auto', 'auto'] only the first column would be resized to 300px, the other would be "auto".
-* `index` - bolean. False by default - If you write index=True, index of the dataframe will then be visible in your table.
-* `even_color` - accepts string representation of colors (either "white" or "FFFFF"). For instance, for the font color of the even lines to be white, you would write: even_color='white'.
-* `color` - accepts string representation of colors (either "white" or "FFFFF"). For instance, for the background color of the even lines to be black, you would write: even_color='black'.
-* `conditions` - accepts dictionnary providing the following information: <name_of_column>: `{'min': <min range>,'max': <max range>,'min_color': <color_for_min>,'max_color': <color_for_max>}` Below is an exmaple, if a column name is "Age" and we wish to have the ages represented in red if they are under 25 and green if they are over 60.
-* `padding` - accepts a string to set the CSS padding in the table (`10px`, `0px 20px`, `0px 20px 0px 0px`) 
-* `odd_bg_color` - accepts a hex or standard color for the odd row background 
-* `border_bottom_color` - accepts a color for the bottom border for the headers
+The intention is not simply to expose the same email HTML in a browser, but to allow Tableloom to produce output appropriate to the capabilities of a modern browser while keeping the simple API that makes the library useful for scripts and automated reports.
 
+## Data sources
 
-```
-html_table = build_table(df
-            , 'yellow_dark'
-            , font_size='medium'
-            , font_family='Open Sans
-            , sans-serif'
-            , text_align='left'
-            , width='auto'
-            , index=False
-            ,conditions={
-                'Age': {
-                    'min': 25,
-                    'max': 60,
-                    'min_color': 'red',
-                    'max_color': 'green',
-                }
-            }
-			, even_color='black'
-			, even_bg_color='white')
-```
+Pandas DataFrames are currently the primary supported input.
+
+The longer-term goal is for Tableloom to work with a broader range of tabular data without requiring the user to convert everything into pandas first.
+
+Potential inputs include:
+
+* pandas DataFrames
+* sequences of records
+* dictionaries
+* NumPy arrays
+* other dataframe implementations
+* Arrow-compatible data
+
+Additional input types will be added where they provide a useful and coherent interface.
+
+## Design goals
+
+Tableloom aims to be:
+
+**Simple**
+
+The common case should require very little code.
+
+**Portable**
+
+Generated output should work in the environment it was designed for.
+
+**Data-source agnostic**
+
+The rendering system should not be unnecessarily coupled to a particular dataframe library.
+
+**Destination-aware**
+
+Email and browser HTML have different requirements. Tableloom should embrace that rather than hiding it.
+
+**Lightweight**
+
+The basic rendering path should not require a web framework or browser runtime.
+
+**Accessible**
+
+Accessibility should be considered part of table rendering rather than something added later.
+
+## Project origins
+
+Tableloom began as a fork of [`pretty_html_table`](https://github.com/sbi-rviot/ph_table) by Renaud Viot.
+
+The original project provided a useful and focused implementation for generating styled HTML tables from pandas DataFrames, particularly for use in email.
+
+Tableloom is an independent project built from that starting point, with the intention of expanding the scope to broader data sources and multiple rendering targets.
+
+The original project and inherited code are distributed under the MIT License.
+
+## Contributing
+
+Tableloom is currently in early development and the API is expected to change.
+
+Issues, bug reports, ideas and pull requests are welcome.
+
+If you're interested in contributing, please open an issue before undertaking a substantial change so that the direction can be discussed first.
+
+## License
+
+Tableloom is released under the MIT License.
+
+See [`LICENSE`](LICENSE) for the full license text.
+
+## Acknowledgements
+
+Tableloom would not exist without the work that went into `pretty_html_table`.
+
+Thank you to Renaud Viot for creating and maintaining the original project.
